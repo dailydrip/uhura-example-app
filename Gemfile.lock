@@ -1,3 +1,11 @@
+PATH
+  remote: ../uhura-client
+  specs:
+    uhura_client (0.1.0)
+      faraday
+      faraday_middleware
+      json
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -123,6 +131,10 @@ GEM
       activesupport (>= 4.2.0)
     faker (1.9.3)
       i18n (>= 0.7)
+    faraday (0.15.4)
+      multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.13.1)
+      faraday (>= 0.7.4, < 1.0)
     ffi (1.10.0)
     ffi (1.10.0-java)
     ffi (1.10.0-x64-mingw32)
@@ -179,6 +191,7 @@ GEM
     msgpack (1.2.6-x64-mingw32)
     msgpack (1.2.6-x86-mingw32)
     multi_json (1.13.1)
+    multipart-post (2.1.1)
     nio4r (2.3.1)
     nio4r (2.3.1-java)
     nokogiri (1.10.1)
@@ -395,6 +408,7 @@ DEPENDENCIES
   spring-watcher-listen (~> 2.0.0)
   turbolinks (~> 5)
   tzinfo-data
+  uhura_client!
   web-console (>= 3.3.0)
   webpacker (>= 4.0.0.rc.3)
 

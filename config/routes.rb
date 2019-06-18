@@ -7,5 +7,6 @@ Rails.application.routes.draw do
     root to: 'users#index'
   end
   devise_for :users
+  post 'send_message' => 'home#send_message'
   root to: 'home#index'
 end
