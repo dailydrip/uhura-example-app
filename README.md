@@ -1,12 +1,4 @@
-# Rails Jig
-
-[![Build Status](https://semaphoreci.com/api/v1/dailydrip/rails_jig/branches/master/badge.svg)](https://semaphoreci.com/dailydrip/rails_jig)
-
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/dailydrip/rails_jig)
-
-
-Yet another rails boilerplate, but now using cutting edge libraries.
+# Uhura Example App
 
 ## Getting Started
 
