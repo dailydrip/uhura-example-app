@@ -41,7 +41,7 @@ gem 'omniauth-identity'
 gem 'bootsnap', '>= 1.1.0', require: false
 
 # slim
-gem 'slim'
+gem 'slim-rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -49,6 +49,8 @@ group :development, :test do
   gem 'rspec'
   gem 'rspec-rails', '~> 3.8'
   gem 'spinach-rails'
+  gem 'awesome_print'
+  gem 'hirb'
 end
 
 group :test do
