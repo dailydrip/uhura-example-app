@@ -5,4 +5,4 @@ Feature: Check the home page
 
   Scenario: Happy path
     Given I am on the home page
-    Then I can see the text welcome to rails JIG!
+    Then I can see the text welcome to Uhura Example!

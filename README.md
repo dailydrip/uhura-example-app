@@ -39,7 +39,7 @@ $ spinach
 
 ## Deployment
 
-You can deploy this [directly to Heroku](https://heroku.com/deploy?template=https://github.com/dailydrip/rails_jig), if you want to.
+You can deploy this [directly to Heroku](https://heroku.com/deploy?template=https://github.com/dailydrip/uhura_example), if you want to.
 
 ## Staging
 

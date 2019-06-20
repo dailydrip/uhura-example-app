@@ -338,7 +338,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    temple (0.8.0)
+    temple (0.8.1)
     thor (0.20.3)
     thread_safe (0.3.6)
     thread_safe (0.3.6-java)
@@ -416,4 +416,4 @@ RUBY VERSION
    ruby 2.6.1p33
 
 BUNDLED WITH
-   1.17.2
+   1.17.3
