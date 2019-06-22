@@ -6,7 +6,7 @@ class Spinach::Features::CheckTheHomePage < Spinach::FeatureSteps
     visit '/'
   end
 
-  step 'I can see the text welcome to rails JIG!' do
-    expect(page).to have_content(/Welcome to rails jig!/i)
+  step 'I can see the text welcome to Uhura Example!' do
+    expect(page).to have_content(/Welcome to Uhura Example!/i)
   end
 end

@@ -18,19 +18,27 @@ class HomeController < ApplicationController
   def send_message
     message = UhuraClient::Message.new(
       public_token: "42c50c442ee3ca01378e",
-      receiver_sso_id: "88543898",
-      email: UhuraClient::Email.new(
-        subject: "Yo!",
-        message: "Yo!",
-        options: {}
-      ),
-      template_id: "d-0ce0d614007d4a72b8242838451e9a65",
+      receiver_sso_id: "55357450",
+      email_subject: "Picnic Saturday",
+      email_message: {
+            "header": "Dragon Rage",
+            "section1": "imagine you are writing an email. you are in front of the computer...",
+            "button": "Count me in!"
+      },
+      template_id: "d-05d33214e6994b01b577602036bfa9f5",
       sms_message: "Yo!"
       )
 
-    # create a client by passing the api key, team id and public token
     client = UhuraClient::MessageClient.new(
-      api_key: "b1dcc4b8287a82fe8889", team_id: "1", )
-    client.send_message(message)
+      api_key: "b1dcc4b8287a82fe8889",
+      team_id: "1"
+    )
+    begin
+      client.send_message(message)
+    rescue StandardError => error
+      flash[:error] =  JSON.parse(error.to_s)['error']['message']
+    end
+    flash[:success] =  'Success!'
+    redirect_to :root
   end
 end

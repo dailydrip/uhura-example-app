@@ -1,6 +1,5 @@
 h3 Welcome to the uhura example app
 
-
 h3 Send Message
 
 form accept-charset="UTF-8" action="/send_message" method="post"
@@ -10,4 +9,10 @@ form accept-charset="UTF-8" action="/send_message" method="post"
   input name="message" type="text" value=""
   label To:
   input name="to" type="text" value=""
+  label &#x200b;
   input type="submit"
+
+  label &#x200b;
+- flash.each do |type, message|
+  .flash
+    = message

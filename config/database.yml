@@ -23,7 +23,7 @@ default: &default
 
 development:
   <<: *default
-  database: rails_jig_development
+  database: uhura_example_development
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -57,7 +57,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: rails_jig_test
+  database: uhura_example_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -80,6 +80,6 @@ test:
 #
 production:
   <<: *default
-  database: rails_jig_production
-  username: rails_jig
-  password: <%= ENV['RAILS_JIG_DATABASE_PASSWORD'] %>
+  database: uhura_example_production
+  username: uhura_example
+  password: <%= ENV['UHURA_EXAMPLE_DATABASE_PASSWORD'] %>

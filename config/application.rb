@@ -21,7 +21,7 @@ require 'sprockets/railtie'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module RailsJig
+module UhuraExample
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
@@ -33,5 +33,10 @@ module RailsJig
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Allow generation using slim templates
+    config.generators do |g|
+      g.template_engine :slim
+    end
   end
 end
