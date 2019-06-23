@@ -16,17 +16,18 @@ class HomeController < ApplicationController
   end
 
   def send_message
+    # Create message with SMS and Email content
     message = UhuraClient::Message.new(
       public_token: "42c50c442ee3ca01378e",
-      receiver_sso_id: "55357450",
-      email_subject: "Picnic Saturday",
+      receiver_sso_id: params[:receiver_sso_id],
+      email_subject: params[:email_subject],
       email_message: {
-            "header": "Dragon Rage",
-            "section1": "imagine you are writing an email. you are in front of the computer...",
-            "button": "Count me in!"
+            "header": params[:header],
+            "section1": params[:section1],
+            "button": params[:button]
       },
-      template_id: "d-05d33214e6994b01b577602036bfa9f5",
-      sms_message: "Yo!"
+      template_id: params[:template_id],
+      sms_message: params[:sms_message]
       )
 
     client = UhuraClient::MessageClient.new(
@@ -35,10 +36,10 @@ class HomeController < ApplicationController
     )
     begin
       client.send_message(message)
+      flash[:success] =  'Success!'
     rescue StandardError => error
       flash[:error] =  JSON.parse(error.to_s)['error']['message']
     end
-    flash[:success] =  'Success!'
     redirect_to :root
   end
 end

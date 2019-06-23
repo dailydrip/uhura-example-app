@@ -13,3 +13,48 @@
  *= require_tree .
  *= require_self
  */
+
+label {
+    font-weight: bold;
+}
+
+.normal {
+    font-weight: normal;
+}
+
+input {
+    margin-bottom: 5px;
+}
+
+.header {
+    width: 380px;
+}
+
+.section {
+    word-break: break-all;
+    text-wrap: normal;
+}
+
+.left10 {
+    margin-left: 10px;
+}
+
+.width250 {
+    width: 250px;
+}
+
+.sms_message {
+    min-width: 480px;
+}
+
+.column {
+    float: left;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+

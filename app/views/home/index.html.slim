@@ -1,18 +1,117 @@
-h3 Welcome to the uhura example app
-
-h3 Send Message
+h1 Uhura Messaging Sample Application
 
 form accept-charset="UTF-8" action="/send_message" method="post"
   input name="utf8" type="hidden" value="✓" /
   input name="authenticity_token" type="hidden" value="J7CBxfHalt49OSHp27hblqK20c9PgwJ108nDHX/8Cts="
-  label Message:
-  input name="message" type="text" value=""
-  label To:
-  input name="to" type="text" value=""
-  label &#x200b;
-  input type="submit"
+
+  .row
+    .column
+      label Receiver SSO ID (*):
+      = text_field_tag 'receiver_sso_id', nil, required: true, placeholder: '99999999'
+
+    .column.left10
+      | (*) = Required Field
+
+  fieldset.email
+    legend="Email"
+    .row
+      .column
+        label Email Subject (*)
+        = text_field_tag 'email_subject', nil, required: true, class: 'width250'
+        br
+        br
+        label CC
+        = text_field_tag 'cc', nil, placeholder: 'john.doe@xyz.com'
+
+        label CC Name
+        = text_field_tag  'cc_name', nil, placeholder: 'John Doe'
+        br
+        br
+
+        label BCC
+        = text_field_tag  'bcc', nil, placeholder: 'John Doe'
+
+        label BCC Name (Ex: John Doe):
+        = text_field_tag  'bcc_name', nil, placeholder: 'John Doe'
+        br
+        br
+
+        label Reply To
+        = text_field_tag  'reply_to', nil, placeholder: 'John Doe'
+
+        label Reply To Name (Ex: John Doe):
+        = text_field_tag  'reply_to_name', nil, placeholder: 'John Doe'
+        br
+        br
+
+        label Send At:
+        = text_field_tag  'send_at', nil, placeholder: '1561253703'
+
+        label Batch ID:
+        = text_field_tag  'batch_id', nil, placeholder: 'ABC123'
+
+      .column.left10
+        fieldset.email
+          legend="Template"
+
+          label SendGrid Template ID (*):
+          = text_field_tag 'template_id', nil, required: true, class: 'width250'
+
+          label Header(*):
+          = text_field_tag 'header', nil, required: true, class: 'width250'
+
+          label Section 1 (*):
+          = text_area_tag 'section1', nil, size: "50x5", required: true
+
+          label Section 2:
+          = text_area_tag 'section2', nil, size: "50x5"
+
+          label Section 3:
+          = text_area_tag 'section3', nil, size: "50x5"
+
+          label Button Label (*):
+          = text_field_tag 'button', nil, required: true
 
   label &#x200b;
-- flash.each do |type, message|
-  .flash
-    = message
+  .row
+    .column
+      fieldset.sms
+        legend="SMS"
+        label SMS Message (*):
+        = text_field_tag 'sms_message', nil, required: true, class: 'sms_message'
+
+    .column
+      fieldset.status.left10
+        legend= "Message Status"
+        label Email Status:
+        = text_field_tag 'email_status'
+
+        label SMS Status:
+        = text_field_tag 'sms_status'
+
+  .row
+    .column
+      = submit_tag 'Send Message'
+
+    .column.left10
+      - flash.each do |type, message|
+        .flash
+          = message
+
+javascript:
+  function noenter() {
+      return !(window.event && window.event.keyCode == 13);
+  }
+  fields = document.forms[0].elements
+  fields['email_status'].setAttribute("readonly", "readonly)")
+  fields['sms_status'].setAttribute("readonly", "readonly)")
+  fields['section1'].setAttribute("onKeyPress", "return noenter()")
+  // Set default example values
+  fields['receiver_sso_id'].value = '55357450'
+  fields['email_subject'].value = 'Picnic Saturday Week'
+  fields['template_id'].value = 'd-05d33214e6994b01b577602036bfa9f5'
+  fields['header'].value = 'Dragon Rage'
+  fields['section1'].value = 'imagine you are writing an email. you are in front of the computer. you are operating the computer, clicking a mouse and typing on a keyboard, but the message will be sent to a human over the internet. so you are working before the computer, but with a human behind the computer.'
+  fields['button'].value = 'Count me in!'
+  fields['sms_message'].value = 'Bring Drinks to the Picnic Saturday Week'
+
