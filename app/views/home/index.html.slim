@@ -105,7 +105,7 @@ form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_messag
     .column.left10
       - flash.each do |type, message|
         .flash
-          - message
+          = message
 
 javascript:
     function noenter() {
