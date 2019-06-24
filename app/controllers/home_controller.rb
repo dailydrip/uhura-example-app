@@ -27,9 +27,7 @@ class HomeController < ApplicationController
     client = UhuraClient::MessageClient.new(
         api_key: "b1dcc4b8287a82fe8889", team_id: "1", public_token: "42c50c442ee3ca01378e")
 
-    #render json: {status: client.status_of(UhuraClient::Message.new(id: params[:message_id])) }
-
-    render json: { status: 'FANTASTIC'}
+    render json: {status: client.status_of(UhuraClient::Message.new(id: params[:client_id])) }
   end
 
   def status

@@ -129,9 +129,12 @@ javascript:
         client_id = document.getElementById('client_id').value
         if (client_id) {
             $.get("check_status/?client_id=" + client_id, function (data) {
-                debugger;
-                $("#status").html(data.status);
-                alert("Load was performed.");
+                $('#email_status').html(data['status']['sendgrid_msg_status'])
+                $('#email_status').addClass('updated')
+                setTimeout(
+                    function () {
+                        $('#email_status').removeClass('updated')
+                    }, 2000);
             });
         } else {
             alert("Send a message before checking it's status.")
