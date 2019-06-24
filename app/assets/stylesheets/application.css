@@ -28,6 +28,11 @@ input {
 
 input:read-only {
     background-color: #f8f8f8;
+    transition: color 1s;
+}
+
+.updated {
+    color: red;
 }
 
 .header {

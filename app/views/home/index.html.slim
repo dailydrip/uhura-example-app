@@ -1,5 +1,8 @@
 h1 Uhura Messaging Sample Application
 
+
+#status
+
 form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_message" method="post"
   input name="utf8" type="hidden" value="✓" /
   input name="authenticity_token" type="hidden" value="J7CBxfHalt49OSHp27hblqK20c9PgwJ108nDHX/8Cts="
@@ -14,7 +17,7 @@ form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_messag
       | (*) = Required Field
 
   fieldset.email
-    legend= "Email"
+    legend="Email"
     .row
       .column
         label Email Subject (*)
@@ -101,11 +104,11 @@ form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_messag
         .column
           = submit_tag 'Clear All', type: 'button', onclick: 'clearAll()', class: 'left10'
         .column
-          = submit_tag 'Check Status', type: 'button', onclick: 'checkStatus()', class: 'left10'
+          = submit_tag 'Get Status', type: 'button', onclick: 'getStatus()', class: 'left10'
     .column.left10
       - flash.each do |type, message|
         .flash
-          - message
+          = message
 
 javascript:
     function noenter() {
@@ -122,15 +125,23 @@ javascript:
         }
     }
 
-    function checkStatus() {
+    function getStatus() {
         client_id = document.getElementById('client_id').value
         if (client_id) {
-            alert('Check Status - client_id: ' + client_id)
+            $.get("check_status/?client_id=" + client_id, function (data) {
+                $('#email_status').html(data['status']['sendgrid_msg_status'])
+                $('#email_status').addClass('updated')
+                setTimeout(
+                    function () {
+                        $('#email_status').removeClass('updated')
+                    }, 2000);
+            });
+        } else {
+            alert("Send a message before checking it's status.")
         }
     }
 
     function AddAstrixIfRequired(fields) {
-        debugger
         for (i = 0; i < fields.length; i++) {
             if (fields[i].required) {
                 if (fields[i].labels[0].textContent.lastIndexOf('*') == -1) {
@@ -171,9 +182,9 @@ javascript:
         // Set default example values
         fields['receiver_sso_id'].value = '55357450'
         fields['email_subject'].value = 'Picnic Saturday Week'
-        fields['template_id'].value = 'd-05d33214e6994b01b577602036bfa9f5'
+        // fields['template_id'].value = 'd-05d33214e6994b01b577602036bfa9f5'
         fields['header'].value = 'Dragon Rage'
-        fields['section1'].value = 'imagine you are writing an email. you are in front of the computer. you are operating the computer, clicking a mouse and typing on a keyboard, but the message will be sent to a human over the internet. so you are working before the computer, but with a human behind the computer.'
+        fields['section1'].value = 'Imagine you are writing an email. You are in front of the computer. You are operating the computer, clicking a mouse and typing on a keyboard, but the message will be sent to a human over the internet. So, you are working before the computer.'
         fields['button'].value = 'Count me in!'
         fields['sms_message'].value = 'Bring Drinks to the Picnic Saturday Week'
         // Set dynamically
