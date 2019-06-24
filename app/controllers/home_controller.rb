@@ -23,6 +23,15 @@ class HomeController < ApplicationController
     @sendgrid_templates = templates
   end
 
+  def status_ajax
+    client = UhuraClient::MessageClient.new(
+        api_key: "b1dcc4b8287a82fe8889", team_id: "1", public_token: "42c50c442ee3ca01378e")
+
+    #render json: {status: client.status_of(UhuraClient::Message.new(id: params[:message_id])) }
+
+    render json: { status: 'FANTASTIC'}
+  end
+
   def status
     sleep 1.second
     ## This is the way how we can get the status of a  message
