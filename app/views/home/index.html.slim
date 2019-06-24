@@ -1,6 +1,6 @@
 h1 Uhura Messaging Sample Application
 
-form accept-charset="UTF-8" action="/send_message" method="post"
+form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_message" method="post"
   input name="utf8" type="hidden" value="✓" /
   input name="authenticity_token" type="hidden" value="J7CBxfHalt49OSHp27hblqK20c9PgwJ108nDHX/8Cts="
 
@@ -29,7 +29,7 @@ form accept-charset="UTF-8" action="/send_message" method="post"
         br
 
         label BCC
-        = text_field_tag  'bcc', nil, placeholder: 'John Doe'
+        = text_field_tag  'bcc', nil, placeholder: 'john.doe@xyz.com'
 
         label BCC Name (Ex: John Doe):
         = text_field_tag  'bcc_name', nil, placeholder: 'John Doe'
@@ -37,7 +37,7 @@ form accept-charset="UTF-8" action="/send_message" method="post"
         br
 
         label Reply To
-        = text_field_tag  'reply_to', nil, placeholder: 'John Doe'
+        = text_field_tag  'reply_to', nil, placeholder: 'john.doe@xyz.com'
 
         label Reply To Name (Ex: John Doe):
         = text_field_tag  'reply_to_name', nil, placeholder: 'John Doe'
@@ -91,27 +91,49 @@ form accept-charset="UTF-8" action="/send_message" method="post"
 
   .row
     .column
-      = submit_tag 'Send Message'
-
+        .row
+          .column
+            = submit_tag 'Send Message'
+          .column
+            = submit_tag 'Reset', type: 'reset'
+          .column
+            = submit_tag 'Clear all', type: 'button', onclick: 'clearAll()'
     .column.left10
       - flash.each do |type, message|
         .flash
-          = message
+          - message
 
 javascript:
   function noenter() {
       return !(window.event && window.event.keyCode == 13);
   }
-  fields = document.forms[0].elements
-  fields['email_status'].setAttribute("readonly", "readonly)")
-  fields['sms_status'].setAttribute("readonly", "readonly)")
-  fields['section1'].setAttribute("onKeyPress", "return noenter()")
-  // Set default example values
-  fields['receiver_sso_id'].value = '55357450'
-  fields['email_subject'].value = 'Picnic Saturday Week'
-  fields['template_id'].value = 'd-05d33214e6994b01b577602036bfa9f5'
-  fields['header'].value = 'Dragon Rage'
-  fields['section1'].value = 'imagine you are writing an email. you are in front of the computer. you are operating the computer, clicking a mouse and typing on a keyboard, but the message will be sent to a human over the internet. so you are working before the computer, but with a human behind the computer.'
-  fields['button'].value = 'Count me in!'
-  fields['sms_message'].value = 'Bring Drinks to the Picnic Saturday Week'
+
+  function setDefaults() {
+      fields = document.forms[0].elements
+      fields['email_status'].setAttribute("readonly", "readonly)")
+      fields['sms_status'].setAttribute("readonly", "readonly)")
+      fields['section1'].setAttribute("onKeyPress", "return noenter()")
+      // Set default example values
+      fields['receiver_sso_id'].value = '55357450'
+      fields['email_subject'].value = 'Picnic Saturday Week'
+      fields['template_id'].value = 'd-05d33214e6994b01b577602036bfa9f5'
+      fields['header'].value = 'Dragon Rage'
+      fields['section1'].value = 'imagine you are writing an email. you are in front of the computer. you are operating the computer, clicking a mouse and typing on a keyboard, but the message will be sent to a human over the internet. so you are working before the computer, but with a human behind the computer.'
+      fields['button'].value = 'Count me in!'
+      fields['sms_message'].value = 'Bring Drinks to the Picnic Saturday Week'
+      // Set dynamically
+      fields['email_status'].value = "#{@email_status}"
+      fields['sms_status'].value = "#{@sms_status}"
+  }
+  setDefaults()
+
+  function clearAll() {
+      fields = document.forms[0].elements
+      for (i = 0; i < fields.length; i++) {
+          if (fields[i].type == 'text' || fields[i].type == 'textarea') {
+              fields[i].value = ''
+              fields[i].placeholder = ''
+          }
+      }
+  }
 
