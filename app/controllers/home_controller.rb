@@ -1,11 +1,22 @@
 # frozen_string_literal: true
+require "ostruct"
 
 class HomeController < ApplicationController
   skip_before_action :verify_authenticity_token
 
+  def templates
+    [
+        OpenStruct.new(id: 'd-05d33214e6994b01b577602036bfa9f5', name: 'Sendgrid Template with 1 Section'),
+        OpenStruct.new(id: 'd-9cb910a98ffc4f99b9b5952b5d2c7f6b', name: 'Sendgrid Template with 2 Sections'),
+        OpenStruct.new(id: 'd-05d33214e6994b01b577602036bfa9f5', name: 'Sendgrid Template with 3 Sections')
+    ]
+  end
+
   def index
     @email_status = params['email_status']
     @sms_status = params['sms_status']
+    @client_id = params['client_id']
+    @sendgrid_templates = templates
   end
 
   def status
@@ -46,6 +57,7 @@ class HomeController < ApplicationController
     email_sms_status = status
     redirect_to controller: 'home', action: 'index',
                 email_status: email_sms_status['sendgrid_msg_status'],
-                sms_status: email_sms_status['clearstream_msg_status']
+                sms_status: email_sms_status['clearstream_msg_status'],
+                client_id: @message.client_id
   end
 end

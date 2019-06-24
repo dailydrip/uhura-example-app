@@ -26,6 +26,10 @@ input {
     margin-bottom: 5px;
 }
 
+input:read-only {
+    background-color: #f8f8f8;
+}
+
 .header {
     width: 380px;
 }

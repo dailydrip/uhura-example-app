@@ -3,6 +3,7 @@ h1 Uhura Messaging Sample Application
 form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_message" method="post"
   input name="utf8" type="hidden" value="✓" /
   input name="authenticity_token" type="hidden" value="J7CBxfHalt49OSHp27hblqK20c9PgwJ108nDHX/8Cts="
+  = hidden_field_tag 'client_id', "#{@client_id}"
 
   .row
     .column
@@ -13,49 +14,50 @@ form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_messag
       | (*) = Required Field
 
   fieldset.email
-    legend="Email"
+    legend= "Email"
     .row
       .column
         label Email Subject (*)
         = text_field_tag 'email_subject', nil, required: true, class: 'width250'
+        p
         br
-        br
+
         label CC
         = text_field_tag 'cc', nil, placeholder: 'john.doe@xyz.com'
 
         label CC Name
-        = text_field_tag  'cc_name', nil, placeholder: 'John Doe'
-        br
-        br
+        = text_field_tag 'cc_name', nil, placeholder: 'John Doe'
+        p
 
         label BCC
-        = text_field_tag  'bcc', nil, placeholder: 'john.doe@xyz.com'
+        = text_field_tag 'bcc', nil, placeholder: 'john.doe@xyz.com'
 
         label BCC Name (Ex: John Doe):
-        = text_field_tag  'bcc_name', nil, placeholder: 'John Doe'
-        br
-        br
+        = text_field_tag 'bcc_name', nil, placeholder: 'John Doe'
+        p
 
         label Reply To
-        = text_field_tag  'reply_to', nil, placeholder: 'john.doe@xyz.com'
+        = text_field_tag 'reply_to', nil, placeholder: 'john.doe@xyz.com'
 
         label Reply To Name (Ex: John Doe):
-        = text_field_tag  'reply_to_name', nil, placeholder: 'John Doe'
-        br
+        = text_field_tag 'reply_to_name', nil, placeholder: 'John Doe'
+        p
         br
 
         label Send At:
-        = text_field_tag  'send_at', nil, placeholder: '1561253703'
+        = text_field_tag 'send_at', nil, placeholder: '1561253703'
 
         label Batch ID:
-        = text_field_tag  'batch_id', nil, placeholder: 'ABC123'
+        = text_field_tag 'batch_id', nil, placeholder: 'ABC123'
 
       .column.left10
         fieldset.email
-          legend="Template"
+          legend= "Template"
 
           label SendGrid Template ID (*):
-          = text_field_tag 'template_id', nil, required: true, class: 'width250'
+          / = text_field_tag 'template_id', nil, required: true, class: 'width250'
+          = select_tag "template_id", options_from_collection_for_select(@sendgrid_templates, "id", "name"), onchange: "setRequiredTemplates(event.target.selectedIndex)"
+          p
 
           label Header(*):
           = text_field_tag 'header', nil, required: true, class: 'width250'
@@ -63,20 +65,20 @@ form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_messag
           label Section 1 (*):
           = text_area_tag 'section1', nil, size: "50x5", required: true
 
-          label Section 2:
+          = label_tag 'section2', 'Section 2:'
           = text_area_tag 'section2', nil, size: "50x5"
 
-          label Section 3:
+          = label_tag 'section3', 'Section 3:'
           = text_area_tag 'section3', nil, size: "50x5"
 
           label Button Label (*):
           = text_field_tag 'button', nil, required: true
 
-  label &#x200b;
+  p
   .row
     .column
       fieldset.sms
-        legend="SMS"
+        legend= "SMS"
         label SMS Message (*):
         = text_field_tag 'sms_message', nil, required: true, class: 'sms_message'
 
@@ -91,49 +93,92 @@ form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_messag
 
   .row
     .column
-        .row
-          .column
-            = submit_tag 'Send Message'
-          .column
-            = submit_tag 'Reset', type: 'reset'
-          .column
-            = submit_tag 'Clear all', type: 'button', onclick: 'clearAll()'
+      .row
+        .column
+          = submit_tag 'Send Message'
+        .column
+          = submit_tag 'Reset', type: 'reset', class: 'left10'
+        .column
+          = submit_tag 'Clear All', type: 'button', onclick: 'clearAll()', class: 'left10'
+        .column
+          = submit_tag 'Check Status', type: 'button', onclick: 'checkStatus()', class: 'left10'
     .column.left10
       - flash.each do |type, message|
         .flash
           - message
 
 javascript:
-  function noenter() {
-      return !(window.event && window.event.keyCode == 13);
-  }
+    function noenter() {
+        return !(window.event && window.event.keyCode == 13);
+    }
 
-  function setDefaults() {
-      fields = document.forms[0].elements
-      fields['email_status'].setAttribute("readonly", "readonly)")
-      fields['sms_status'].setAttribute("readonly", "readonly)")
-      fields['section1'].setAttribute("onKeyPress", "return noenter()")
-      // Set default example values
-      fields['receiver_sso_id'].value = '55357450'
-      fields['email_subject'].value = 'Picnic Saturday Week'
-      fields['template_id'].value = 'd-05d33214e6994b01b577602036bfa9f5'
-      fields['header'].value = 'Dragon Rage'
-      fields['section1'].value = 'imagine you are writing an email. you are in front of the computer. you are operating the computer, clicking a mouse and typing on a keyboard, but the message will be sent to a human over the internet. so you are working before the computer, but with a human behind the computer.'
-      fields['button'].value = 'Count me in!'
-      fields['sms_message'].value = 'Bring Drinks to the Picnic Saturday Week'
-      // Set dynamically
-      fields['email_status'].value = "#{@email_status}"
-      fields['sms_status'].value = "#{@sms_status}"
-  }
-  setDefaults()
+    function clearAll() {
+        fields = document.forms[0].elements
+        for (i = 0; i < fields.length; i++) {
+            if (fields[i].type == 'text' || fields[i].type == 'textarea') {
+                fields[i].value = ''
+                fields[i].placeholder = ''
+            }
+        }
+    }
 
-  function clearAll() {
-      fields = document.forms[0].elements
-      for (i = 0; i < fields.length; i++) {
-          if (fields[i].type == 'text' || fields[i].type == 'textarea') {
-              fields[i].value = ''
-              fields[i].placeholder = ''
-          }
-      }
-  }
+    function checkStatus() {
+        client_id = document.getElementById('client_id').value
+        if (client_id) {
+            alert('Check Status - client_id: ' + client_id)
+        }
+    }
+
+    function AddAstrixIfRequired(fields) {
+        debugger
+        for (i = 0; i < fields.length; i++) {
+            if (fields[i].required) {
+                if (fields[i].labels[0].textContent.lastIndexOf('*') == -1) {
+                    fields[i].labels[0].textContent = fields[i].labels[0].textContent.replace(':', '') + ' (*):'
+                }
+            } else {
+                if (fields[i].labels[0].textContent.lastIndexOf('*') > 0) {
+                    fields[i].labels[0].textContent = fields[i].labels[0].textContent.replace(' (*):', ':')
+                }
+            }
+        }
+    }
+
+    function setRequiredTemplates(selectedIndex) {
+        fields = document.forms[0].elements
+        if (selectedIndex == 0) {
+            fields['section2'].removeAttribute('required')
+            fields['section3'].removeAttribute('required')
+            AddAstrixIfRequired([fields['section2'], fields['section3']])
+        } else if (selectedIndex == 1) {
+            fields['section2'].setAttribute("required", 'required')
+            fields['section3'].removeAttribute('required')
+            AddAstrixIfRequired([fields['section2'], fields['section3']])
+        } else if (selectedIndex == 2) {
+            fields['section2'].setAttribute("required", 'required')
+            fields['section3'].setAttribute("required", 'required')
+            AddAstrixIfRequired([fields['section2'], fields['section3']])
+        }
+    }
+
+    function setDefaults() {
+        fields = document.forms[0].elements
+        fields['email_status'].setAttribute("readonly", "readonly)")
+        fields['sms_status'].setAttribute("readonly", "readonly)")
+        fields['section1'].setAttribute("onKeyPress", "return noenter()")
+        fields['section2'].setAttribute("onKeyPress", "return noenter()")
+        fields['section3'].setAttribute("onKeyPress", "return noenter()")
+        // Set default example values
+        fields['receiver_sso_id'].value = '55357450'
+        fields['email_subject'].value = 'Picnic Saturday Week'
+        fields['template_id'].value = 'd-05d33214e6994b01b577602036bfa9f5'
+        fields['header'].value = 'Dragon Rage'
+        fields['section1'].value = 'imagine you are writing an email. you are in front of the computer. you are operating the computer, clicking a mouse and typing on a keyboard, but the message will be sent to a human over the internet. so you are working before the computer, but with a human behind the computer.'
+        fields['button'].value = 'Count me in!'
+        fields['sms_message'].value = 'Bring Drinks to the Picnic Saturday Week'
+        // Set dynamically
+        fields['email_status'].value = "#{@email_status}"
+        fields['sms_status'].value = "#{@sms_status}"
+    }
+    setDefaults()
 
