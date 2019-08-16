@@ -64,3 +64,20 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 end
+
+class Object
+  def interesting_methods
+    case self.class
+    when Class
+      self.public_methods.sort - Object.public_methods
+    when Module
+      self.public_methods.sort - Module.public_methods
+    else
+      self.public_methods.sort - Object.new.public_methods
+    end
+  end
+  # Return methods whose name matches where string.  Ex: User.new.interesting_methods_filter('first')
+  def interesting_methods_filter(where)
+    self.interesting_methods.select {|i| i.to_s =~ /#{where}/ }
+  end
+end

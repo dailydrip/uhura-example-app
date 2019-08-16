@@ -2,6 +2,7 @@
 require "ostruct"
 
 class HomeController < ApplicationController
+  include ErrorHelper
   skip_before_action :verify_authenticity_token
 
   def templates
@@ -19,24 +20,28 @@ class HomeController < ApplicationController
       @email_status = 'ERROR'
     end
     @sms_status = params['sms_status']
-    @client_id = params['client_id']
+    @message_id = params['message_id']
     @sendgrid_templates = templates
   end
 
   def status_ajax
     client = UhuraClient::MessageClient.new(
-        api_key: "b1dcc4b8287a82fe8889", team_id: "1", public_token: "42c50c442ee3ca01378e")
+        api_key: ENV['UHURA_API_KEY'], team_id: ENV['UHURA_TEAM_ID'], public_token: ENV['UHURA_PUBLIC_TOKEN'])
 
-    render json: {status: client.status_of(UhuraClient::Message.new(id: params[:client_id])) }
+    render json: {status: client.status_of(UhuraClient::Message.new(id: params[:message_id])) }
   end
 
   def status
     sleep 1.second
-    ## This is the way how we can get the status of a  message
     client = UhuraClient::MessageClient.new(
-      api_key: "b1dcc4b8287a82fe8889", team_id: "1", public_token: "42c50c442ee3ca01378e")
+      api_key: ENV['UHURA_API_KEY'], team_id: ENV['UHURA_TEAM_ID'], public_token: ENV['UHURA_PUBLIC_TOKEN'])
 
-    client.status_of(UhuraClient::Message.new(id: @message.client_id))
+    begin
+      response = client.status_of(UhuraClient::Message.new(id: @message.id))
+      response
+    rescue StandardError => error
+      flash_error_status(error.to_s)
+    end
   end
 
   def email_message_hash
@@ -50,32 +55,52 @@ class HomeController < ApplicationController
     email_message
   end
 
+  def text_to_array(text)
+    text.split(',').map { |i| i.strip }
+  end
+
+  def email_options_hash
+    {
+        "cc": text_to_array(params[:cc]),
+        "bcc": text_to_array(params[:bcc]),
+        "reply_to": text_to_array(params[:reply_to]),
+        "send_at": text_to_array(params[:send_at]),
+        "batch_id": text_to_array(params[:batch_id])
+    }
+  end
+
   def send_message
     # Create message with SMS and Email content
     @message = UhuraClient::Message.new(
-      public_token: "42c50c442ee3ca01378e",
+      public_token: ENV['UHURA_PUBLIC_TOKEN'],
       receiver_sso_id: params[:receiver_sso_id],
       email_subject: params[:email_subject],
       email_message: email_message_hash,
+      email_options: email_options_hash,
       template_id: params[:template_id],
       sms_message: params[:sms_message],
-      client_id: SecureRandom.uuid
+      id: nil
       )
 
     client = UhuraClient::MessageClient.new(
-      api_key: "b1dcc4b8287a82fe8889",
-      team_id: "1"
+        api_key: ENV['UHURA_API_KEY'],
+        team_id: ENV['UHURA_TEAM_ID'],
+        public_token: ENV['UHURA_PUBLIC_TOKEN']
     )
+
     begin
-      client.send_message(@message)
+      response = client.send_message(@message)
+      @message.id = response['message_id']
       flash[:success] =  'Success!'
     rescue StandardError => error
-      flash[:error] =  JSON.parse(error.to_s)['error']['message']
+      # err_val = JSON.parse(error.to_s)['error']
+      # flash[:error] =  err_val['message'] || err_val['error']
+      flash_error(error)
     end
     email_sms_status = status
     redirect_to controller: 'home', action: 'index',
                 email_status: email_sms_status['sendgrid_msg_status'],
                 sms_status: email_sms_status['clearstream_msg_status'],
-                client_id: @message.client_id
+                message_id: @message.id
   end
 end

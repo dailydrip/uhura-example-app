@@ -6,12 +6,16 @@ h1 Uhura Messaging Sample Application
 form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_message" method="post"
   input name="utf8" type="hidden" value="✓" /
   input name="authenticity_token" type="hidden" value="J7CBxfHalt49OSHp27hblqK20c9PgwJ108nDHX/8Cts="
-  = hidden_field_tag 'client_id', "#{@client_id}"
+  = hidden_field_tag 'message_id', "#{@message_id}"
 
   .row
     .column
       label Receiver SSO ID (*):
       = text_field_tag 'receiver_sso_id', nil, required: true, placeholder: '99999999'
+
+    .column.left10
+      label From Email Address:
+      = text_field_tag 'from_email', nil, required: false, placeholder: "default is sending app's email address", class: 'width250'
 
     .column.left10
       | (*) = Required Field
@@ -94,6 +98,7 @@ form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_messag
         label SMS Status:
         = text_field_tag 'sms_status'
 
+  p
   .row
     .column
       .row
@@ -126,10 +131,10 @@ javascript:
     }
 
     function getStatus() {
-        client_id = document.getElementById('client_id').value
-        if (client_id) {
-            $.get("check_status/?client_id=" + client_id, function (data) {
-                $('#email_status').html(data['status']['sendgrid_msg_status'])
+        message_id = document.getElementById('message_id').value
+        if (message_id) {
+            $.get("check_status/?message_id=" + message_id, function (data) {
+                $('#email_status')[0].value = data['status']['sendgrid_msg_status']
                 $('#email_status').addClass('updated')
                 setTimeout(
                     function () {
@@ -180,7 +185,7 @@ javascript:
         fields['section2'].setAttribute("onKeyPress", "return noenter()")
         fields['section3'].setAttribute("onKeyPress", "return noenter()")
         // Set default example values
-        fields['receiver_sso_id'].value = '55357450'
+        fields['receiver_sso_id'].value = '63501603'
         fields['email_subject'].value = 'Picnic Saturday Week'
         // fields['template_id'].value = 'd-05d33214e6994b01b577602036bfa9f5'
         fields['header'].value = 'Dragon Rage'
