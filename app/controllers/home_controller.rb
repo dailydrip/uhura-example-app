@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require "ostruct"
+
+require 'ostruct'
 
 class HomeController < ApplicationController
   include ErrorHelper
@@ -7,9 +8,9 @@ class HomeController < ApplicationController
 
   def templates
     [
-        OpenStruct.new(id: 'd-05d33214e6994b01b577602036bfa9f5', name: 'Sendgrid Template with 1 Section'),
-        OpenStruct.new(id: 'd-9cb910a98ffc4f99b9b5952b5d2c7f6b', name: 'Sendgrid Template with 2 Sections'),
-        OpenStruct.new(id: 'd-8eeef84db24d478ab0a5d30e35e7211b', name: 'Sendgrid Template with 3 Sections')
+      OpenStruct.new(id: 'd-05d33214e6994b01b577602036bfa9f5', name: 'Sendgrid Template with 1 Section'),
+      OpenStruct.new(id: 'd-9cb910a98ffc4f99b9b5952b5d2c7f6b', name: 'Sendgrid Template with 2 Sections'),
+      OpenStruct.new(id: 'd-8eeef84db24d478ab0a5d30e35e7211b', name: 'Sendgrid Template with 3 Sections')
     ]
   end
 
@@ -26,15 +27,17 @@ class HomeController < ApplicationController
 
   def status_ajax
     client = UhuraClient::MessageClient.new(
-        api_key: ENV['UHURA_API_KEY'], team_id: ENV['UHURA_TEAM_ID'], public_token: ENV['UHURA_PUBLIC_TOKEN'])
+      api_key: ENV['UHURA_API_KEY'], team_id: ENV['UHURA_TEAM_ID'], public_token: ENV['UHURA_PUBLIC_TOKEN']
+    )
 
-    render json: {status: client.status_of(UhuraClient::Message.new(id: params[:message_id])) }
+    render json: { status: client.status_of(UhuraClient::Message.new(id: params[:message_id])) }
   end
 
   def status
     sleep 1.second
     client = UhuraClient::MessageClient.new(
-      api_key: ENV['UHURA_API_KEY'], team_id: ENV['UHURA_TEAM_ID'], public_token: ENV['UHURA_PUBLIC_TOKEN'])
+      api_key: ENV['UHURA_API_KEY'], team_id: ENV['UHURA_TEAM_ID'], public_token: ENV['UHURA_PUBLIC_TOKEN']
+    )
 
     begin
       response = client.status_of(UhuraClient::Message.new(id: @message.id))
@@ -46,9 +49,9 @@ class HomeController < ApplicationController
 
   def email_message_hash
     email_message = {
-        "header": params[:header],
-        "section1": params[:section1],
-        "button": params[:button]
+      "header": params[:header],
+      "section1": params[:section1],
+      "button": params[:button]
     }
     email_message[:section2] = params[:section2] if params[:section2]
     email_message[:section3] = params[:section3] if params[:section3]
@@ -56,16 +59,16 @@ class HomeController < ApplicationController
   end
 
   def text_to_array(text)
-    text.split(',').map { |i| i.strip }
+    text.split(',').map(&:strip)
   end
 
   def email_options_hash
     {
-        "cc": text_to_array(params[:cc]),
-        "bcc": text_to_array(params[:bcc]),
-        "reply_to": params[:reply_to],
-        "send_at": text_to_array(params[:send_at]),
-        "batch_id": text_to_array(params[:batch_id])
+      "cc": text_to_array(params[:cc]),
+      "bcc": text_to_array(params[:bcc]),
+      "reply_to": params[:reply_to],
+      "send_at": text_to_array(params[:send_at]),
+      "batch_id": text_to_array(params[:batch_id])
     }
   end
 
@@ -77,6 +80,7 @@ class HomeController < ApplicationController
     end
   end
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def send_message
     # Create message with SMS and Email content
     @message = UhuraClient::Message.new(
@@ -89,27 +93,30 @@ class HomeController < ApplicationController
       template_id: params[:template_id],
       sms_message: params[:sms_message],
       id: nil
-      )
+    )
 
     client = UhuraClient::MessageClient.new(
-        api_key: ENV['UHURA_API_KEY'],
-        team_id: ENV['UHURA_TEAM_ID'],
-        public_token: ENV['UHURA_PUBLIC_TOKEN']
+      api_key: ENV['UHURA_API_KEY'],
+      team_id: ENV['UHURA_TEAM_ID'],
+      public_token: ENV['UHURA_PUBLIC_TOKEN']
     )
 
     begin
       response = client.send_message(@message)
       @message.id = response['message_id']
-      flash[:success] =  'Success!'
+      flash[:success] = 'Success!'
     rescue StandardError => error
       # err_val = JSON.parse(error.to_s)['error']
       # flash[:error] =  err_val['message'] || err_val['error']
       flash_error(error)
     end
     email_sms_status = status
+    # rubocop:disable Layout/AlignHash
     redirect_to controller: 'home', action: 'index',
-                email_status: email_sms_status['sendgrid_msg_status'],
-                sms_status: email_sms_status['clearstream_msg_status'],
-                message_id: @message.id
+      email_status: email_sms_status['sendgrid_msg_status'],
+      sms_status: email_sms_status['clearstream_msg_status'],
+      message_id: @message.id
+    # rubocop:enable Layout/AlignHash
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 end

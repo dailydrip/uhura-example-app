@@ -1642,7 +1642,7 @@ Metrics/AbcSize:
   VersionAdded: '0.27'
   # The ABC size is a calculated magnitude, so this number can be an Integer or
   # a Float.
-  Max: 15
+  Max: 20
 
 Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
@@ -1687,7 +1687,7 @@ Metrics/LineLength:
   Enabled: true
   VersionAdded: '0.25'
   VersionChanged: '0.46'
-  Max: 90
+  Max: 120
   # To make it possible to copy or click on URIs in the code, we allow lines
   # containing a URI to be longer than Max.
   AllowHeredoc: true
@@ -1713,7 +1713,7 @@ Metrics/MethodLength:
   VersionAdded: '0.25'
   VersionChanged: '0.59.2'
   CountComments: false  # count full line comments?
-  Max: 10
+  Max: 21
   ExcludedMethods: []
 
 Metrics/ModuleLength:

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module ErrorHelper
-
   def error_to_s(error)
     if error.class.eql?(String)
       error
@@ -17,14 +16,16 @@ module ErrorHelper
 
   def flash_error(error)
     flash.discard
-    flash[:error] =  error_to_s(error)
+    flash[:error] = error_to_s(error)
   end
 
   def flash_error_status(error_str)
     doc = Nokogiri::HTML(error_str)
     flash.discard
     # When an exception is caught by a Rails controller, it displays a one-liner in the only h2 section.
+    # rubocop:disable Style/ConditionalAssignment
     if doc&.at('h2')
+      # rubocop:enable Style/ConditionalAssignment
       flash[:error] = "Status ErrorX: #{doc&.at('h2')&.to_str&.strip}"
     else
       # Display raw error string
