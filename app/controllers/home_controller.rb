@@ -63,10 +63,18 @@ class HomeController < ApplicationController
     {
         "cc": text_to_array(params[:cc]),
         "bcc": text_to_array(params[:bcc]),
-        "reply_to": text_to_array(params[:reply_to]),
+        "reply_to": params[:reply_to],
         "send_at": text_to_array(params[:send_at]),
         "batch_id": text_to_array(params[:batch_id])
     }
+  end
+
+  def from_email
+    if params[:from_email].blank?
+      nil
+    else
+      params[:from_email]
+    end
   end
 
   def send_message
@@ -74,6 +82,7 @@ class HomeController < ApplicationController
     @message = UhuraClient::Message.new(
       public_token: ENV['UHURA_PUBLIC_TOKEN'],
       receiver_sso_id: params[:receiver_sso_id],
+      from_email: from_email,
       email_subject: params[:email_subject],
       email_message: email_message_hash,
       email_options: email_options_hash,
