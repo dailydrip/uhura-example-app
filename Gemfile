@@ -5,7 +5,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.3'
 
-gem 'uhura_client', path: '../uhura-client'
+#gem 'uhura_client', path: '../uhura-client'
+gem 'uhura_client', git: 'git@github.com:dailydrip/uhura.git', branch: 'master'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.0.beta1'
