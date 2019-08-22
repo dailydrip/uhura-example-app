@@ -35,6 +35,10 @@ input:read-only {
     color: red;
 }
 
+fieldset.email {
+    max-width: 720px;
+}
+
 .header {
     width: 380px;
 }
