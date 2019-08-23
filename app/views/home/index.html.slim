@@ -1,55 +1,68 @@
 h1 Uhura Messaging Sample Application
 
-
-#status
-
 form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_message" method="post"
   input name="utf8" type="hidden" value="✓" /
   input name="authenticity_token" type="hidden" value="J7CBxfHalt49OSHp27hblqK20c9PgwJ108nDHX/8Cts="
-  = hidden_field_tag 'client_id', "#{@client_id}"
+  = hidden_field_tag 'message_id', "#{@message_id}"
 
   .row
     .column
       label Receiver SSO ID (*):
-      = text_field_tag 'receiver_sso_id', nil, required: true, placeholder: '99999999'
-
-    .column.left10
+      = text_field_tag 'receiver_sso_id', nil, required: true, placeholder: '99999999', class: 'width80'
+      br
       | (*) = Required Field
+
+    .column.left30
+      fieldset.email
+        legend= "From (Optional)"
+        .row
+          .column
+          label Email Address:
+          = text_field_tag 'from_email', nil, required: false, placeholder: "Default: Sending app's email address", class: 'width250'
+
+    .column.left10.left10
+      .row
+        .column
+        p
+        | Use <a href="https://tools.ietf.org/html/rfc5322#section-3.4">RFC 5322</a> for From, CC, BCC, Reply To
+        br
+        | <i>Example:</i>
+        br
+        | al@aol.com, Bob Brown &lt;bob@yahoo.com&gt;
 
   fieldset.email
     legend="Email"
     .row
       .column
         label Email Subject (*)
-        = text_field_tag 'email_subject', nil, required: true, class: 'width250'
+        = text_field_tag 'email_subject', nil, required: true
         p
         br
 
         label CC
-        = text_field_tag 'cc', nil, placeholder: 'john.doe@xyz.com'
+        = text_field_tag 'cc', nil, placeholder: 'john.doe@example.com'
 
-        label CC Name
-        = text_field_tag 'cc_name', nil, placeholder: 'John Doe'
         p
-
         label BCC
-        = text_field_tag 'bcc', nil, placeholder: 'john.doe@xyz.com'
+        = text_field_tag 'bcc', nil, placeholder: 'john.doe@example.com'
 
-        label BCC Name (Ex: John Doe):
-        = text_field_tag 'bcc_name', nil, placeholder: 'John Doe'
         p
-
         label Reply To
-        = text_field_tag 'reply_to', nil, placeholder: 'john.doe@xyz.com'
+        = text_field_tag 'reply_to', nil, placeholder: 'john.doe@example.com'
 
-        label Reply To Name (Ex: John Doe):
-        = text_field_tag 'reply_to_name', nil, placeholder: 'John Doe'
+        p
+        | <i>CC and BCC can have multiple emails,</i>
+        br
+        | <i>where each is separated by a comma.</i>
+        br
+        | <i> Reply To can have up to one email.</i>
+
         p
         br
-
         label Send At:
         = text_field_tag 'send_at', nil, placeholder: '1561253703'
 
+        p
         label Batch ID:
         = text_field_tag 'batch_id', nil, placeholder: 'ABC123'
 
@@ -63,7 +76,7 @@ form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_messag
           p
 
           label Header(*):
-          = text_field_tag 'header', nil, required: true, class: 'width250'
+          = text_field_tag 'header', nil, required: true
 
           label Section 1 (*):
           = text_area_tag 'section1', nil, size: "50x5", required: true
@@ -89,11 +102,12 @@ form onreset="window.location = '/'" accept-charset="UTF-8" action="/send_messag
       fieldset.status.left10
         legend= "Message Status"
         label Email Status:
-        = text_field_tag 'email_status'
+        = text_field_tag 'email_status', nil, required: false, class: 'width175'
 
         label SMS Status:
-        = text_field_tag 'sms_status'
+        = text_field_tag 'sms_status', nil, required: false, class: 'width175'
 
+  p
   .row
     .column
       .row
@@ -126,10 +140,10 @@ javascript:
     }
 
     function getStatus() {
-        client_id = document.getElementById('client_id').value
-        if (client_id) {
-            $.get("check_status/?client_id=" + client_id, function (data) {
-                $('#email_status').html(data['status']['sendgrid_msg_status'])
+        message_id = document.getElementById('message_id').value
+        if (message_id) {
+            $.get("check_status/?message_id=" + message_id, function (data) {
+                $('#email_status')[0].value = data['status']['sendgrid_msg_status']
                 $('#email_status').addClass('updated')
                 setTimeout(
                     function () {
@@ -180,7 +194,7 @@ javascript:
         fields['section2'].setAttribute("onKeyPress", "return noenter()")
         fields['section3'].setAttribute("onKeyPress", "return noenter()")
         // Set default example values
-        fields['receiver_sso_id'].value = '55357450'
+        fields['receiver_sso_id'].value = '63501603'
         fields['email_subject'].value = 'Picnic Saturday Week'
         // fields['template_id'].value = 'd-05d33214e6994b01b577602036bfa9f5'
         fields['header'].value = 'Dragon Rage'

@@ -35,6 +35,10 @@ input:read-only {
     color: red;
 }
 
+fieldset.email {
+    max-width: 720px;
+}
+
 .header {
     width: 380px;
 }
@@ -48,7 +52,19 @@ input:read-only {
     margin-left: 10px;
 }
 
-.width250 {
+.left30 {
+    margin-left: 30px;
+}
+
+.width80 {
+    width: 80px !important;;
+}
+
+.width175 {
+    width: 175px !important;;
+}
+
+input[type=text] {
     width: 250px;
 }
 
